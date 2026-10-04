@@ -52,7 +52,13 @@ const authenticateToken = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.warn(`[AUTH] Token verification failed: ${error.name}`);
+    // console.warn(`[AUTH] Token verification failed: ${error.name}`);
+
+    console.error(
+      "[AUTH] Token verification failed:",
+      error.name,
+      error.message,
+    );
 
     return res.status(401).json({
       message: "Invalid or expired token",

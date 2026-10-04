@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Email | TaskFlow</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 32px;
+        border-radius: 16px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2563eb;
+        margin-bottom: 24px;
+      }
+
+      .icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: 25px;
+        color: #1e293b;
+        margin-bottom: 12px;
+      }
+
+      .description {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      .email {
+        color: #2563eb;
+        font-weight: bold;
+        word-break: break-word;
+      }
+
+      input {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 10px;
+        margin-bottom: 18px;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+
+      button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background: #1d4ed8;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .resend {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #64748b;
+      }
+
+      .resend button {
+        width: auto;
+        padding: 0;
+        background: none;
+        color: #2563eb;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .resend button:hover {
+        text-decoration: underline;
+      }
+
+      .message {
+        margin-top: 16px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .success {
+        color: #15803d;
+      }
+
+      .error {
+        color: #dc2626;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 24px;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .back-link:hover {
+        color: #2563eb;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo">TaskFlow</div>
+
+      <div class="icon">📩</div>
+
+      <h1>Verify your email</h1>
+
+      <p class="description">
+        We've sent a 6-digit verification code to
+        <br />
+        <span class="email" id="emailDisplay"></span>
+      </p>
+
+      <form id="verifyForm">
+        <input
+          type="text"
+          id="otp"
+          placeholder="000000"
+          maxlength="6"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          autocomplete="one-time-code"
+          required
+        />
+
+        <button type="submit" id="verifyButton">Verify Email</button>
+      </form>
+
+      <div id="message" class="message"></div>
+
+      <div class="resend">
+        Didn't receive the code?
+        <button type="button" id="resendButton">Resend OTP</button>
+      </div>
+
+      <a href="/register.html" class="back-link"> ← Back to registration </a>
+    </div>
+
+    <script src="/js/verify-otp.js"></script>
+  </body>
+</html>

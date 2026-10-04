@@ -44,3 +44,10 @@ CREATE TABLE IF NOT EXISTS tasks (
 -- Index for faster user-specific task queries
 CREATE INDEX IF NOT EXISTS idx_tasks_user_id
 ON tasks(user_id);
+
+
+CREATE TABLE IF NOT EXISTS revoked_tokens (
+    id BIGSERIAL PRIMARY KEY,
+    jti TEXT NOT NULL UNIQUE,
+    revoked_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

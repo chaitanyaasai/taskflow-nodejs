@@ -1,29 +1,56 @@
 require("dotenv").config();
-const pool = require("./src/config/db");
+
 const express = require("express");
+const path = require("path");
+
+const pool = require("./src/config/db");
+
 const { sendTestEmail } = require("./src/services/emailService");
+
 const authRoutes = require("./src/routes/authRoutes");
+const taskRoutes = require("./src/routes/taskRoutes");
+
 const requestLogger = require("./src/middleware/logger");
 const authenticateToken = require("./src/middleware/authMiddleware");
-const taskRoutes = require("./src/routes/taskRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// ==========================================
+// MIDDLEWARE
+// ==========================================
 
+app.use(express.json());
 app.use(requestLogger);
+
+// Serve frontend files from the public folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// ==========================================
+// API ROUTES
+// ==========================================
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
 
-app.use("/api/auth", authRoutes);
+// Task management routes
 app.use("/api/tasks", taskRoutes);
 
-// Health check endpoint
-app.get("/", (req, res) => {
-  res.status(200).send("TaskFlow API is running!");
+// ==========================================
+// HEALTH CHECK
+// ==========================================
+
+app.get("/api/health", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "TaskFlow API is running!",
+    timestamp: new Date().toISOString(),
+  });
 });
+
+// ==========================================
+// PROTECTED ROUTE
+// ==========================================
 
 app.get("/api/protected", authenticateToken, (req, res) => {
   console.log("[API] Protected route accessed");
@@ -34,7 +61,10 @@ app.get("/api/protected", authenticateToken, (req, res) => {
   });
 });
 
-// Temporary email test endpoint
+// ==========================================
+// TEMPORARY EMAIL TEST ENDPOINT
+// ==========================================
+
 app.post("/api/test-email", async (req, res) => {
   try {
     const { email } = req.body;
@@ -60,11 +90,15 @@ app.post("/api/test-email", async (req, res) => {
   }
 });
 
+// ==========================================
+// DATABASE TEST ENDPOINT
+// ==========================================
+
 app.get("/api/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Database connected successfully!",
       databaseTime: result.rows[0].now,
@@ -72,13 +106,17 @@ app.get("/api/test-db", async (req, res) => {
   } catch (error) {
     console.error("Database connection error:", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Database connection failed",
     });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+// ==========================================
+// START SERVER
+// ==========================================
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`TaskFlow server running on port ${PORT}`);
 });

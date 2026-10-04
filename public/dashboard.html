@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | TaskFlow</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f1f5f9;
+        color: #1e293b;
+      }
+
+      .navbar {
+        background: white;
+        padding: 18px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .logo {
+        font-size: 25px;
+        font-weight: bold;
+        color: #2563eb;
+      }
+
+      .user-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-email {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .logout-btn {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 35px auto;
+        padding: 0 20px;
+      }
+
+      .welcome {
+        margin-bottom: 25px;
+      }
+
+      .welcome h1 {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .welcome p {
+        color: #64748b;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      .stat-card p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .stat-card h2 {
+        font-size: 30px;
+      }
+
+      .total h2 {
+        color: #2563eb;
+      }
+      .completed h2 {
+        color: #16a34a;
+      }
+      .pending h2 {
+        color: #ea580c;
+      }
+
+      .task-section {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 12px;
+      }
+
+      .section-header h2 {
+        font-size: 21px;
+      }
+
+      .add-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .add-btn:hover {
+        background: #1d4ed8;
+      }
+
+      .task-form {
+        display: none;
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .task-form.active {
+        display: block;
+      }
+
+      .task-form input,
+      .task-form textarea,
+      .task-form select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font: inherit;
+      }
+
+      .task-form textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .save-btn {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 11px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        background: #e2e8f0;
+        color: #334155;
+        border: none;
+        padding: 11px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .task-item {
+        border: 1px solid #e2e8f0;
+        padding: 18px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .task-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .task-info h3 {
+        margin-bottom: 7px;
+        overflow-wrap: anywhere;
+      }
+
+      .task-info p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+      }
+
+      .task-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        align-items: center;
+      }
+
+      .status {
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 20px;
+      }
+
+      .status-pending {
+        background: #ffedd5;
+        color: #c2410c;
+      }
+
+      .status-completed {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .edit-btn,
+      .delete-btn,
+      .complete-btn {
+        border: none;
+        padding: 8px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      .edit-btn {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .delete-btn {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .complete-btn {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      .message {
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      .error {
+        color: #dc2626;
+      }
+      .success {
+        color: #15803d;
+      }
+
+      .empty {
+        text-align: center;
+        color: #64748b;
+        padding: 35px 10px;
+      }
+
+      @media (max-width: 650px) {
+        .stats {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .navbar {
+          padding: 15px 4%;
+        }
+
+        .user-email {
+          display: none;
+        }
+
+        .container {
+          margin-top: 25px;
+        }
+
+        .task-section {
+          padding: 16px;
+        }
+
+        .task-item {
+          flex-direction: column;
+        }
+
+        .task-actions {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="logo">TaskFlow</div>
+
+      <div class="user-area">
+        <span class="user-email" id="userEmail"></span>
+        <button class="logout-btn" id="logoutButton">Logout</button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="welcome">
+        <h1>Welcome to your Dashboard 👋</h1>
+        <p>Organize your work and get things done.</p>
+      </div>
+
+      <section class="stats">
+        <div class="stat-card total">
+          <p>Total Tasks</p>
+          <h2 id="totalTasks">0</h2>
+        </div>
+
+        <div class="stat-card completed">
+          <p>Completed</p>
+          <h2 id="completedTasks">0</h2>
+        </div>
+
+        <div class="stat-card pending">
+          <p>Pending</p>
+          <h2 id="pendingTasks">0</h2>
+        </div>
+      </section>
+
+      <section class="task-section">
+        <div class="section-header">
+          <h2>My Tasks</h2>
+          <button class="add-btn" id="addTaskButton">+ Add Task</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <form id="taskForm" class="task-form">
+          <input type="hidden" id="taskId" />
+
+          <input
+            type="text"
+            id="taskTitle"
+            placeholder="Task title"
+            maxlength="200"
+            required
+          />
+
+          <textarea
+            id="taskDescription"
+            placeholder="Task description (optional)"
+          ></textarea>
+
+          <select id="taskStatus">
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+
+          <div class="form-actions">
+            <button type="submit" class="save-btn" id="saveTaskButton">
+              Save Task
+            </button>
+
+            <button type="button" class="cancel-btn" id="cancelTaskButton">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div id="taskList" class="task-list">
+          <div class="empty">Loading your tasks...</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>
