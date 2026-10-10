@@ -9,6 +9,7 @@ const { sendTestEmail } = require("./src/services/emailService");
 
 const authRoutes = require("./src/routes/authRoutes");
 const taskRoutes = require("./src/routes/taskRoutes");
+const aiRoutes = require("./src/routes/aiRoutes");
 
 const requestLogger = require("./src/middleware/logger");
 const authenticateToken = require("./src/middleware/authMiddleware");
@@ -36,6 +37,8 @@ app.use("/api/auth", authRoutes);
 // Task management routes
 app.use("/api/tasks", taskRoutes);
 
+// AI task planning route — requires login
+app.use("/api/ai", authenticateToken, aiRoutes);
 // ==========================================
 // HEALTH CHECK
 // ==========================================

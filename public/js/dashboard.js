@@ -287,5 +287,106 @@ logoutButton.addEventListener("click", async () => {
   }
 });
 
+// AI Task Planner
+const aiPlanForm = document.getElementById("aiPlanForm");
+const aiGoalInput = document.getElementById("aiGoal");
+const generatePlanButton = document.getElementById("generatePlanButton");
+const aiMessage = document.getElementById("aiMessage");
+const aiPlanResults = document.getElementById("aiPlanResults");
+
+let generatedPlan = [];
+
+aiPlanForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const goal = aiGoalInput.value.trim();
+
+  if (!goal) {
+    aiMessage.textContent = "Please enter a goal.";
+    aiMessage.className = "message error";
+    return;
+  }
+
+  generatePlanButton.disabled = true;
+  generatePlanButton.textContent = "Generating...";
+  aiMessage.textContent = "AI is creating your plan. Please wait...";
+  aiMessage.className = "message";
+  aiPlanResults.replaceChildren();
+  generatedPlan = [];
+
+  try {
+    const data = await apiRequest("/api/ai/plan", {
+      method: "POST",
+      body: JSON.stringify({ goal }),
+    });
+
+    generatedPlan = data.plan.tasks;
+
+    aiMessage.textContent = data.plan.title;
+    aiMessage.className = "message success";
+
+    generatedPlan.forEach((task, index) => {
+      const card = document.createElement("article");
+      card.className = "task-item ai-task-card";
+
+      const info = document.createElement("div");
+      info.className = "task-info";
+
+      const title = document.createElement("h3");
+      title.textContent = task.title;
+
+      const description = document.createElement("p");
+      description.textContent = task.description;
+
+      const priority = document.createElement("p");
+      priority.className = "ai-priority";
+      priority.textContent =
+        "Priority: " +
+        task.priority.charAt(0).toUpperCase() +
+        task.priority.slice(1);
+
+      info.append(title, description, priority);
+
+      const saveButton = document.createElement("button");
+      saveButton.type = "button";
+      saveButton.className = "save-btn";
+      saveButton.textContent = "Add to My Tasks";
+
+      saveButton.addEventListener("click", async () => {
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        try {
+          await apiRequest("/api/tasks", {
+            method: "POST",
+            body: JSON.stringify({
+              title: task.title,
+              description: task.description,
+              status: "pending",
+            }),
+          });
+
+          card.remove();
+          showMessage(`Added "${task.title}" to your tasks.`);
+          await loadTasks();
+        } catch (error) {
+          showMessage(error.message, "error");
+          saveButton.disabled = false;
+          saveButton.textContent = "Add to My Tasks";
+        }
+      });
+
+      card.append(info, saveButton);
+      aiPlanResults.appendChild(card);
+    });
+  } catch (error) {
+    aiMessage.textContent = error.message || "Unable to generate a plan.";
+    aiMessage.className = "message error";
+  } finally {
+    generatePlanButton.disabled = false;
+    generatePlanButton.textContent = "Generate Plan";
+  }
+});
+
 // Initial load
 loadTasks();

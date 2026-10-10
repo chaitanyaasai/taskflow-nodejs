@@ -329,6 +329,74 @@
           width: 100%;
         }
       }
+
+      /* AI Task Planner */
+      .ai-planner {
+        margin-bottom: 25px;
+        border: 1px solid #dbeafe;
+        background: linear-gradient(135deg, #ffffff, #f8faff);
+      }
+
+      .ai-description {
+        color: #64748b;
+        margin-bottom: 18px;
+        line-height: 1.6;
+      }
+
+      #aiPlanForm label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      #aiGoal {
+        width: 100%;
+        min-height: 110px;
+        padding: 14px;
+        margin-bottom: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font: inherit;
+        resize: vertical;
+      }
+
+      #aiGoal:focus {
+        outline: 2px solid #93c5fd;
+        border-color: #2563eb;
+      }
+
+      #generatePlanButton:disabled,
+      .ai-task-card button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      #aiPlanResults {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .ai-task-card {
+        background: #fff;
+      }
+
+      .ai-priority {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      @media (max-width: 650px) {
+        #generatePlanButton {
+          width: 100%;
+        }
+      }
     </style>
   </head>
 
@@ -363,6 +431,34 @@
           <p>Pending</p>
           <h2 id="pendingTasks">0</h2>
         </div>
+      </section>
+
+      <section class="task-section ai-planner">
+        <div class="section-header">
+          <h2>AI Task Planner</h2>
+        </div>
+
+        <p class="ai-description">
+          Tell AI your goal and get a personalized task plan.
+        </p>
+
+        <form id="aiPlanForm">
+          <label for="aiGoal">What do you want to achieve?</label>
+
+          <textarea
+            id="aiGoal"
+            placeholder="Example: Prepare for an Azure DevOps interview in 7 days"
+            maxlength="1000"
+            required
+          ></textarea>
+
+          <button type="submit" class="add-btn" id="generatePlanButton">
+            Generate Plan
+          </button>
+        </form>
+
+        <p id="aiMessage" class="message" role="status"></p>
+        <div id="aiPlanResults"></div>
       </section>
 
       <section class="task-section">

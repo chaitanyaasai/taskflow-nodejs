@@ -36,6 +36,8 @@ services:
       GMAIL_USER: ${GMAIL_USER}
       GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      OLLAMA_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: gemma3:1b
 
     depends_on:
       db:
